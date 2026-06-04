@@ -21,8 +21,8 @@ export function Badge({
   color?: OptionColor | "default";
 }) {
   return (
-    <span className={`inline-flex max-w-full items-center rounded-full px-3 py-1 text-xs font-bold ${colorClasses[color]}`}>
-      <span className="truncate">{children}</span>
+    <span className={`inline-flex min-w-0 max-w-full items-center rounded-full px-3 py-1 text-xs font-bold ${colorClasses[color]}`}>
+      <span className="max-w-[9rem] truncate sm:max-w-none">{children}</span>
     </span>
   );
 }

@@ -45,7 +45,7 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      <div className="rounded-3xl bg-white p-4 shadow-sm sm:p-5">
+      <div className="min-w-0 overflow-hidden rounded-3xl bg-white p-3 shadow-sm sm:p-5">
         <div className="mb-4 flex items-center justify-between gap-3">
           <div>
             <h3 className="text-lg font-black text-zinc-950">Focus</h3>
@@ -54,7 +54,7 @@ export default function DashboardPage() {
           <Badge>{focusInputs.length + focusContents.length} actions</Badge>
         </div>
 
-        <div className="grid gap-3 xl:grid-cols-2">
+        <div className="grid min-w-0 gap-3 xl:grid-cols-2">
           {[...focusInputs, ...focusContents].map((item) => (
             <WorkCard key={item.id} item={item} />
           ))}

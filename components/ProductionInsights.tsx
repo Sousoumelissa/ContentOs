@@ -17,8 +17,8 @@ export function PriorityBadge({ priority }: { priority: ContentPriority }) {
   if (priority.level === "green") return null;
 
   return (
-    <span className={`inline-flex max-w-full items-center rounded-full px-3 py-1 text-xs font-black ${priorityClasses[priority.level]}`}>
-      {priority.label}
+    <span className={`inline-flex min-w-0 max-w-full items-center rounded-full px-3 py-1 text-xs font-black ${priorityClasses[priority.level]}`}>
+      <span className="truncate">{priority.label}</span>
       {priority.alerts.length > 0 ? <span className="ml-1 opacity-70">({priority.alerts.length})</span> : null}
     </span>
   );
@@ -27,9 +27,9 @@ export function PriorityBadge({ priority }: { priority: ContentPriority }) {
 export function AlertList({ alerts, compact = false }: { alerts: ContentAlert[]; compact?: boolean }) {
   if (alerts.length === 0) {
     return (
-      <div className="flex items-center gap-2 rounded-2xl bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700">
+      <div className="flex max-w-full items-center gap-2 overflow-hidden rounded-2xl bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700">
         <CheckCircle2 size={14} />
-        Rien a signaler
+        <span className="truncate">Rien a signaler</span>
       </div>
     );
   }
@@ -39,7 +39,7 @@ export function AlertList({ alerts, compact = false }: { alerts: ContentAlert[];
       {alerts.map((alert) => (
         <div
           key={alert.id}
-          className={`inline-flex max-w-full items-center gap-2 rounded-2xl px-3 py-2 text-xs font-black ${priorityClasses[alert.level]}`}
+          className={`inline-flex min-w-0 max-w-full items-center gap-2 rounded-2xl px-3 py-2 text-xs font-black ${priorityClasses[alert.level]}`}
         >
           <AlertTriangle size={14} />
           <span className="truncate">{alert.label}</span>

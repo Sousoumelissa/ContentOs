@@ -29,10 +29,10 @@ export function InlineBadgeSelect({ label, value, color = "default", options, di
 
   return (
     <label
-      className={`relative inline-flex max-w-full items-center rounded-full px-3 py-1 text-xs font-bold ${colorClasses[color]}`}
+      className={`relative inline-flex min-w-0 max-w-full items-center rounded-full px-3 py-1 text-xs font-bold ${colorClasses[color]}`}
       onClick={(event) => event.stopPropagation()}
     >
-      <span className="max-w-[160px] truncate">{selectedLabel}</span>
+      <span className="max-w-[9rem] truncate sm:max-w-[160px]">{selectedLabel}</span>
       <select
         aria-label={label}
         className="absolute inset-0 h-full w-full cursor-pointer opacity-0 disabled:cursor-not-allowed"

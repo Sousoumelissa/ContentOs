@@ -52,13 +52,13 @@ export function WorkCard({
           onOpen();
         }
       }}
-      className={`rounded-3xl bg-white p-4 shadow-sm ${
+      className={`w-full min-w-0 max-w-full overflow-hidden rounded-3xl bg-white p-4 shadow-sm ${
         onOpen ? "cursor-pointer transition hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-zinc-950/20" : ""
       }`}
     >
-      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+      <div className="flex w-full min-w-0 max-w-full flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="min-w-0 flex-1 space-y-2">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex max-w-full flex-wrap gap-2 overflow-hidden">
             {badges ?? (
               <>
                 {item.brandName ? <Badge color="blue">{item.brandName}</Badge> : null}
@@ -71,12 +71,12 @@ export function WorkCard({
             )}
           </div>
 
-          <h3 className="truncate text-base font-black text-zinc-950">{item.title || "Sans titre"}</h3>
-          {item.details ? <p className="line-clamp-2 text-sm text-zinc-600">{item.details}</p> : null}
-          {footer ? <div className="pt-1">{footer}</div> : null}
+          <h3 className="line-clamp-2 break-words text-base font-black leading-snug text-zinc-950">{item.title || "Sans titre"}</h3>
+          {item.details ? <p className="line-clamp-2 break-words text-sm text-zinc-600">{item.details}</p> : null}
+          {footer ? <div className="max-w-full overflow-hidden pt-1">{footer}</div> : null}
         </div>
 
-        <div className="flex shrink-0 flex-wrap gap-2 md:flex-col" onClick={(event) => event.stopPropagation()}>
+        <div className="flex max-w-full shrink-0 flex-wrap gap-2 md:flex-col" onClick={(event) => event.stopPropagation()}>
           {database && statusOptions && onReload ? (
             <StatusSelect database={database} pageId={item.id} value={item.status} options={statusOptions} onDone={onReload} />
           ) : null}

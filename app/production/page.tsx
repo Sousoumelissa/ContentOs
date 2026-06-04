@@ -172,7 +172,7 @@ export default function ProductionPage() {
       </div>
 
       {view === "cards" ? (
-        <div className="grid gap-3 xl:grid-cols-2">
+        <div className="grid min-w-0 gap-3 xl:grid-cols-2">
           {items.length === 0 ? <EmptyState label="Aucun contenu trouve." /> : null}
           {items.map((item) => (
             <WorkCard
