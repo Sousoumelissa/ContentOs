@@ -63,13 +63,13 @@ export function Sidebar() {
         </nav>
       </aside>
 
-      <nav className="fixed bottom-4 left-4 right-4 z-20 overflow-x-auto rounded-3xl bg-zinc-950 p-2 shadow-2xl lg:hidden">
+      <nav className="fixed bottom-3 left-3 right-3 z-20 max-w-[calc(100vw-1.5rem)] overflow-x-auto overscroll-x-contain rounded-3xl bg-zinc-950 p-2 shadow-2xl lg:hidden">
         <div className="flex min-w-max gap-1">
           {nav.map(({ href, label, icon: Icon }) => (
             <Link
               key={href}
               href={href}
-              className={`flex min-w-[76px] flex-col items-center justify-center rounded-2xl px-3 py-2 ${
+              className={`flex min-w-[68px] flex-col items-center justify-center rounded-2xl px-2 py-2 ${
                 isActive(pathname, href) ? "bg-white text-zinc-950" : "text-white/60"
               }`}
             >
