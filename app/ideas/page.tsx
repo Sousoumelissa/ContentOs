@@ -73,8 +73,10 @@ export default function IdeasPage() {
   }, [account, data, query]);
 
   const validateInputs = useMemo(() => {
-    return inputsForStatusCounts.filter((item) => item.status === "Validate");
-  }, [inputsForStatusCounts]);
+    if (!data) return [];
+
+    return data.inputs.filter((item) => item.status === "Validate");
+  }, [data]);
 
   const statusCorrections = useMemo(() => {
     if (!data) return [];
@@ -127,6 +129,8 @@ export default function IdeasPage() {
   }
 
   async function launchProductionAutomation() {
+    if (validateInputs.length === 0) return;
+
     setMessage("");
     setLaunchingAutomation(true);
 
@@ -250,12 +254,10 @@ export default function IdeasPage() {
                   <Button variant="light" disabled={correctingStatuses} onClick={() => void applyStatusCorrections()}>
                     {correctingStatuses ? "Correction..." : "Verifier"}
                   </Button>
-                  {validateInputs.length > 0 ? (
-                    <Button variant="light" disabled={launchingAutomation} onClick={() => void launchProductionAutomation()}>
-                      <Play size={14} />
-                      {launchingAutomation ? "Lancement..." : "Lancer scripts"}
-                    </Button>
-                  ) : null}
+                  <Button variant="light" disabled={launchingAutomation || validateInputs.length === 0} onClick={() => void launchProductionAutomation()}>
+                    <Play size={14} />
+                    {launchingAutomation ? "Lancement..." : "Lancer scripts"}
+                  </Button>
                 </>
               ) : null
             }
@@ -278,8 +280,15 @@ export default function IdeasPage() {
                   data={data}
                   brands={data.brands}
                   sources={data.sources}
-                  statusOptions={statusOrder.orderedOptions}
                   formatOptions={data.schemas.format.inputs ?? []}
+                  disabled={inlineSaving === item.id}
+                  onChange={(patch) => void saveInputInline(item, patch)}
+                />
+              }
+              statusBadge={
+                <InputStatusBadge
+                  item={item}
+                  statusOptions={statusOrder.orderedOptions}
                   disabled={inlineSaving === item.id}
                   onChange={(patch) => void saveInputInline(item, patch)}
                 />
@@ -318,7 +327,6 @@ function InputCardBadges({
   data,
   brands,
   sources,
-  statusOptions,
   formatOptions,
   disabled,
   onChange
@@ -327,12 +335,10 @@ function InputCardBadges({
   data: BootstrapData;
   brands: Brand[];
   sources: Source[];
-  statusOptions: NotionOption[];
   formatOptions: NotionOption[];
   disabled: boolean;
   onChange: (patch: Partial<Pick<InputContent, "brandIds" | "sourceIds" | "formats" | "status">>) => void;
 }) {
-  const selectedStatus = statusOptions.find((option) => option.name === item.status);
   const selectedFormat = formatOptions.find((option) => option.name === item.formats[0]);
 
   return (
@@ -344,14 +350,6 @@ function InputCardBadges({
         disabled={disabled}
         options={[{ value: "", label: "Aucun compte" }, ...brands.map((brand) => ({ value: brand.id, label: brand.name }))]}
         onChange={(value) => onChange({ brandIds: value ? [value] : [] })}
-      />
-      <InlineBadgeSelect
-        label="Statut"
-        color={selectedStatus?.color ?? item.statusColor}
-        value={item.status}
-        disabled={disabled}
-        options={statusOptions.map((option) => ({ value: option.name, label: option.name }))}
-        onChange={(value) => onChange({ status: value })}
       />
       <InlineBadgeSelect
         label="Source"
@@ -370,6 +368,31 @@ function InputCardBadges({
         onChange={(value) => onChange({ formats: value ? [value] : [] })}
       />
     </>
+  );
+}
+
+function InputStatusBadge({
+  item,
+  statusOptions,
+  disabled,
+  onChange
+}: {
+  item: InputContent;
+  statusOptions: NotionOption[];
+  disabled: boolean;
+  onChange: (patch: Partial<Pick<InputContent, "status">>) => void;
+}) {
+  const selectedStatus = statusOptions.find((option) => option.name === item.status);
+
+  return (
+    <InlineBadgeSelect
+      label="Statut"
+      color={selectedStatus?.color ?? item.statusColor}
+      value={item.status}
+      disabled={disabled}
+      options={statusOptions.map((option) => ({ value: option.name, label: option.name }))}
+      onChange={(value) => onChange({ status: value })}
+    />
   );
 }
 

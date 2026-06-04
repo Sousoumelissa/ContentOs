@@ -185,8 +185,15 @@ export default function ProductionPage() {
                 <ContentCardBadges
                   item={item}
                   brands={data.brands}
-                  statusOptions={statusOrder.orderedOptions}
                   formatOptions={data.schemas.format.contents ?? []}
+                  disabled={inlineSaving === item.id}
+                  onChange={(patch) => void saveContentInline(item, patch)}
+                />
+              }
+              statusBadge={
+                <ContentStatusBadge
+                  item={item}
+                  statusOptions={statusOrder.orderedOptions}
                   disabled={inlineSaving === item.id}
                   onChange={(patch) => void saveContentInline(item, patch)}
                 />
@@ -294,8 +301,15 @@ function ProductionKanban({
                       <ContentCardBadges
                         item={item}
                         brands={brands}
-                        statusOptions={statusOptions}
                         formatOptions={formatOptions}
+                        disabled={inlineSaving === item.id}
+                        onChange={(patch) => void onInlineChange(item, patch)}
+                      />
+                    }
+                    statusBadge={
+                      <ContentStatusBadge
+                        item={item}
+                        statusOptions={statusOptions}
                         disabled={inlineSaving === item.id}
                         onChange={(patch) => void onInlineChange(item, patch)}
                       />
@@ -315,19 +329,16 @@ function ProductionKanban({
 function ContentCardBadges({
   item,
   brands,
-  statusOptions,
   formatOptions,
   disabled,
   onChange
 }: {
   item: ContentItem;
   brands: Brand[];
-  statusOptions: NotionOption[];
   formatOptions: NotionOption[];
   disabled: boolean;
   onChange: (patch: Partial<Pick<ContentItem, "status" | "format" | "brandIds">>) => void;
 }) {
-  const selectedStatus = statusOptions.find((option) => option.name === item.status);
   const selectedFormat = formatOptions.find((option) => option.name === item.format);
 
   return (
@@ -341,14 +352,6 @@ function ContentCardBadges({
         onChange={(value) => onChange({ brandIds: value ? [value] : [] })}
       />
       <InlineBadgeSelect
-        label="Statut"
-        color={selectedStatus?.color ?? item.statusColor}
-        value={item.status}
-        disabled={disabled}
-        options={statusOptions.map((option) => ({ value: option.name, label: option.name }))}
-        onChange={(value) => onChange({ status: value })}
-      />
-      <InlineBadgeSelect
         label="Format"
         color={selectedFormat?.color ?? "default"}
         value={item.format}
@@ -360,6 +363,31 @@ function ContentCardBadges({
       <PriorityBadge priority={getContentPriority(item)} />
       {item.date ? <Badge color="green">{item.date}</Badge> : null}
     </>
+  );
+}
+
+function ContentStatusBadge({
+  item,
+  statusOptions,
+  disabled,
+  onChange
+}: {
+  item: ContentItem;
+  statusOptions: NotionOption[];
+  disabled: boolean;
+  onChange: (patch: Partial<Pick<ContentItem, "status">>) => void;
+}) {
+  const selectedStatus = statusOptions.find((option) => option.name === item.status);
+
+  return (
+    <InlineBadgeSelect
+      label="Statut"
+      color={selectedStatus?.color ?? item.statusColor}
+      value={item.status}
+      disabled={disabled}
+      options={statusOptions.map((option) => ({ value: option.name, label: option.name }))}
+      onChange={(value) => onChange({ status: value })}
+    />
   );
 }
 

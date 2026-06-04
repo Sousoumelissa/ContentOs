@@ -25,6 +25,7 @@ export function WorkCard({
   onReload,
   actions,
   badges,
+  statusBadge,
   extraBadges,
   footer,
   hideNotionLink = false,
@@ -36,11 +37,21 @@ export function WorkCard({
   onReload?: () => void;
   actions?: React.ReactNode;
   badges?: React.ReactNode;
+  statusBadge?: React.ReactNode;
   extraBadges?: React.ReactNode;
   footer?: React.ReactNode;
   hideNotionLink?: boolean;
   onOpen?: () => void;
 }) {
+  // Le statut reste toujours dans son coin a droite pour ne pas se melanger aux autres badges.
+  const renderedStatusBadge =
+    statusBadge ??
+    (database && statusOptions && onReload ? (
+      <StatusSelect database={database} pageId={item.id} value={item.status} options={statusOptions} onDone={onReload} />
+    ) : (
+      <Badge color={item.statusColor}>{item.status || "Sans statut"}</Badge>
+    ));
+
   return (
     <Card
       role={onOpen ? "button" : undefined}
@@ -57,28 +68,33 @@ export function WorkCard({
     >
       <div className="flex w-full min-w-0 max-w-full flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="min-w-0 flex-1 space-y-2">
-          <CardBadges>
-            {badges ?? (
-              <>
-                {item.brandName ? <Badge color="blue">{item.brandName}</Badge> : null}
-                <Badge color={item.statusColor}>{item.status || "Sans statut"}</Badge>
-                {item.sourceName ? <Badge color="purple">{item.sourceName}</Badge> : null}
-                {item.format ? <Badge>{item.format}</Badge> : null}
-                {item.date ? <Badge color="green">{item.date}</Badge> : null}
-                {extraBadges}
-              </>
-            )}
-          </CardBadges>
+          <div className="flex min-w-0 items-start justify-between gap-2">
+            <div className="min-w-0 flex-1 space-y-2">
+              <CardBadges>
+                {badges ?? (
+                  <>
+                    {item.brandName ? <Badge color="blue">{item.brandName}</Badge> : null}
+                    {item.sourceName ? <Badge color="purple">{item.sourceName}</Badge> : null}
+                    {item.format ? <Badge>{item.format}</Badge> : null}
+                    {item.date ? <Badge color="green">{item.date}</Badge> : null}
+                    {extraBadges}
+                  </>
+                )}
+              </CardBadges>
 
-          <CardTitle>{item.title || "Sans titre"}</CardTitle>
+              <CardTitle>{item.title || "Sans titre"}</CardTitle>
+            </div>
+
+            <div className="flex max-w-[42vw] shrink-0 justify-end md:max-w-[220px]" onClick={(event) => event.stopPropagation()}>
+              {renderedStatusBadge}
+            </div>
+          </div>
+
           {item.details ? <p className="line-clamp-2 break-words text-sm text-zinc-600">{item.details}</p> : null}
           {footer ? <CardFooter>{footer}</CardFooter> : null}
         </div>
 
         <CardActions onClick={(event) => event.stopPropagation()}>
-          {database && statusOptions && onReload ? (
-            <StatusSelect database={database} pageId={item.id} value={item.status} options={statusOptions} onDone={onReload} />
-          ) : null}
           {actions}
           {!hideNotionLink ? (
             <a href={item.url} target="_blank" rel="noreferrer">

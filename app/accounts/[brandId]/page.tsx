@@ -532,8 +532,15 @@ function ContentList({
               <ContentCardBadges
                 item={item}
                 brands={brands}
-                statusOptions={statusOptions}
                 formatOptions={formatOptions}
+                disabled={inlineSaving === item.id}
+                onChange={(patch) => void onInlineChange(item, patch)}
+              />
+            }
+            statusBadge={
+              <ContentStatusBadge
+                item={item}
+                statusOptions={statusOptions}
                 disabled={inlineSaving === item.id}
                 onChange={(patch) => void onInlineChange(item, patch)}
               />
@@ -549,19 +556,16 @@ function ContentList({
 function ContentCardBadges({
   item,
   brands,
-  statusOptions,
   formatOptions,
   disabled,
   onChange
 }: {
   item: ContentItem;
   brands: Brand[];
-  statusOptions: NotionOption[];
   formatOptions: NotionOption[];
   disabled: boolean;
   onChange: (patch: Partial<Pick<ContentItem, "status" | "format" | "brandIds">>) => void;
 }) {
-  const selectedStatus = statusOptions.find((option) => option.name === item.status);
   const selectedFormat = formatOptions.find((option) => option.name === item.format);
 
   return (
@@ -573,14 +577,6 @@ function ContentCardBadges({
         disabled={disabled}
         options={[{ value: "", label: "Aucun compte" }, ...brands.map((brand) => ({ value: brand.id, label: brand.name }))]}
         onChange={(value) => onChange({ brandIds: value ? [value] : [] })}
-      />
-      <InlineBadgeSelect
-        label="Statut"
-        color={selectedStatus?.color ?? item.statusColor}
-        value={item.status}
-        disabled={disabled}
-        options={statusOptions.map((option) => ({ value: option.name, label: option.name }))}
-        onChange={(value) => onChange({ status: value })}
       />
       <InlineBadgeSelect
         label="Format"
@@ -596,12 +592,36 @@ function ContentCardBadges({
   );
 }
 
+function ContentStatusBadge({
+  item,
+  statusOptions,
+  disabled,
+  onChange
+}: {
+  item: ContentItem;
+  statusOptions: NotionOption[];
+  disabled: boolean;
+  onChange: (patch: Partial<Pick<ContentItem, "status">>) => void;
+}) {
+  const selectedStatus = statusOptions.find((option) => option.name === item.status);
+
+  return (
+    <InlineBadgeSelect
+      label="Statut"
+      color={selectedStatus?.color ?? item.statusColor}
+      value={item.status}
+      disabled={disabled}
+      options={statusOptions.map((option) => ({ value: option.name, label: option.name }))}
+      onChange={(value) => onChange({ status: value })}
+    />
+  );
+}
+
 function InputCardBadges({
   item,
   data,
   brands,
   sources,
-  statusOptions,
   formatOptions,
   disabled,
   onChange
@@ -610,12 +630,10 @@ function InputCardBadges({
   data: BootstrapData;
   brands: Brand[];
   sources: Source[];
-  statusOptions: NotionOption[];
   formatOptions: NotionOption[];
   disabled: boolean;
   onChange: (patch: Partial<Pick<InputContent, "brandIds" | "sourceIds" | "formats" | "status">>) => void;
 }) {
-  const selectedStatus = statusOptions.find((option) => option.name === item.status);
   const selectedFormat = formatOptions.find((option) => option.name === item.formats[0]);
 
   return (
@@ -627,14 +645,6 @@ function InputCardBadges({
         disabled={disabled}
         options={[{ value: "", label: "Aucun compte" }, ...brands.map((brand) => ({ value: brand.id, label: brand.name }))]}
         onChange={(value) => onChange({ brandIds: value ? [value] : [] })}
-      />
-      <InlineBadgeSelect
-        label="Statut"
-        color={selectedStatus?.color ?? item.statusColor}
-        value={item.status}
-        disabled={disabled}
-        options={statusOptions.map((option) => ({ value: option.name, label: option.name }))}
-        onChange={(value) => onChange({ status: value })}
       />
       <InlineBadgeSelect
         label="Source"
@@ -653,6 +663,31 @@ function InputCardBadges({
         onChange={(value) => onChange({ formats: value ? [value] : [] })}
       />
     </>
+  );
+}
+
+function InputStatusBadge({
+  item,
+  statusOptions,
+  disabled,
+  onChange
+}: {
+  item: InputContent;
+  statusOptions: NotionOption[];
+  disabled: boolean;
+  onChange: (patch: Partial<Pick<InputContent, "status">>) => void;
+}) {
+  const selectedStatus = statusOptions.find((option) => option.name === item.status);
+
+  return (
+    <InlineBadgeSelect
+      label="Statut"
+      color={selectedStatus?.color ?? item.statusColor}
+      value={item.status}
+      disabled={disabled}
+      options={statusOptions.map((option) => ({ value: option.name, label: option.name }))}
+      onChange={(value) => onChange({ status: value })}
+    />
   );
 }
 
@@ -700,8 +735,15 @@ function InputList({
               data={data}
               brands={brands}
               sources={sources}
-              statusOptions={statusOptions}
               formatOptions={formatOptions}
+              disabled={inlineSaving === input.id}
+              onChange={(patch) => void onInlineChange(input, patch)}
+            />
+          }
+          statusBadge={
+            <InputStatusBadge
+              item={input}
+              statusOptions={statusOptions}
               disabled={inlineSaving === input.id}
               onChange={(patch) => void onInlineChange(input, patch)}
             />
