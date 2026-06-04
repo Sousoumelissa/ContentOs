@@ -58,11 +58,11 @@ export function PrioritySummary({ counts }: { counts: Record<PriorityLevel, numb
   ];
 
   return (
-    <div className="grid gap-2 sm:grid-cols-4">
+    <div className="grid grid-cols-4 gap-2">
       {items.map((item) => (
-        <div key={item.key} className={`rounded-2xl px-3 py-3 ${priorityClasses[item.key]}`}>
-          <p className="text-xs font-black">{item.label}</p>
-          <p className="mt-1 text-2xl font-black">{counts[item.key]}</p>
+        <div key={item.key} className={`min-w-0 rounded-2xl px-2 py-2 sm:px-3 sm:py-3 ${priorityClasses[item.key]}`}>
+          <p className="truncate text-[10px] font-black leading-tight sm:text-xs">{item.label}</p>
+          <p className="mt-1 text-xl font-black leading-none sm:text-2xl">{counts[item.key]}</p>
         </div>
       ))}
     </div>
