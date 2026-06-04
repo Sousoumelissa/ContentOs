@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/Badge";
+import { Card, CardBadges, CardHeader, CardStats, CardTitle } from "@/components/Card";
 import { DataState } from "@/components/DataState";
 import { EmptyState } from "@/components/EmptyState";
 import { FilterBar } from "@/components/FilterBar";
@@ -82,8 +83,9 @@ export default function AccountsPage() {
 
       <div className="grid gap-3 xl:grid-cols-3">
         {items.map((account) => (
-          <div
+          <Card
             key={account.id}
+            interactive
             role="button"
             tabIndex={0}
             onClick={() => router.push(`/accounts/${account.id}`)}
@@ -93,16 +95,15 @@ export default function AccountsPage() {
                 router.push(`/accounts/${account.id}`);
               }
             }}
-            className="group w-full cursor-pointer overflow-hidden rounded-3xl bg-white p-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-zinc-950/20 sm:p-4"
           >
-            <div className="mb-2 flex items-start justify-between gap-3">
+            <CardHeader>
               <div className="min-w-0">
-                <div className="mb-2 flex flex-wrap gap-2">
+                <CardBadges className="mb-2">
                   <Badge color="blue">@{account.name.toLowerCase().replaceAll(" ", "")}</Badge>
                   <Badge color="blue">{account.niche || "Niche vide"}</Badge>
                   {account.platforms.length ? <Badge color="purple">{account.platforms.length} plateformes</Badge> : null}
-                </div>
-                <h3 className="truncate text-base font-black text-zinc-950">{account.name}</h3>
+                </CardBadges>
+                <CardTitle className="line-clamp-1">{account.name}</CardTitle>
               </div>
               <InlineBadgeSelect
                 label="Statut"
@@ -112,17 +113,17 @@ export default function AccountsPage() {
                 options={statusOrder.orderedOptions.map((option) => ({ value: option.name, label: option.name }))}
                 onChange={(nextStatus) => void saveAccountStatus(account.id, nextStatus)}
               />
-            </div>
+            </CardHeader>
 
-            <div className="mb-2 grid grid-cols-4 gap-1.5 rounded-2xl bg-zinc-50 p-1.5">
+            <CardStats className="mb-2">
               <MiniStat label="inputs" value={data.inputs.filter((item) => inputBelongsToBrand(item, account, data)).length} />
               <MiniStat label="à traiter" value={data.inputs.filter((item) => inputBelongsToBrand(item, account, data) && !["Done", "Abandon"].includes(item.status)).length} />
               <MiniStat label="prod" value={data.contents.filter((item) => item.brandIds.includes(account.id) && ["Script", "Visuel", "Description"].includes(item.status)).length} />
               <MiniStat label="prêts" value={data.contents.filter((item) => item.brandIds.includes(account.id) && ["Prete", "Planifier", "Posté"].includes(item.status)).length} />
-            </div>
+            </CardStats>
 
             <p className="line-clamp-1 text-sm text-zinc-500">{account.target || "Cible non renseignée"}</p>
-          </div>
+          </Card>
         ))}
       </div>
     </section>

@@ -2,9 +2,11 @@
 
 import { BarChart3, CheckCircle2, Clapperboard, Lightbulb, Users } from "lucide-react";
 import { Badge } from "@/components/Badge";
+import { Card } from "@/components/Card";
 import { DataState } from "@/components/DataState";
 import { NotionWarnings } from "@/components/NotionWarnings";
 import { PageTitle } from "@/components/PageTitle";
+import { Surface } from "@/components/Surface";
 import { WorkCard, contentToCard, inputToCard } from "@/components/WorkCard";
 import { useBootstrap } from "@/lib/use-bootstrap";
 import { firstNameFor, inputBrandName, isReady } from "@/lib/ui-helpers";
@@ -35,17 +37,17 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         {stats.map(({ label, value, icon: Icon }) => (
-          <div key={label} className="rounded-2xl bg-white p-3 shadow-sm sm:rounded-3xl sm:p-4">
+          <Card key={label} className="rounded-2xl sm:rounded-3xl">
             <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-2xl bg-zinc-50 text-violet-600 sm:h-10 sm:w-10">
               <Icon size={18} />
             </div>
             <p className="text-xs font-bold text-zinc-500">{label}</p>
             <p className="mt-1 text-2xl font-black text-zinc-950 sm:text-3xl">{value}</p>
-          </div>
+          </Card>
         ))}
       </div>
 
-      <div className="min-w-0 overflow-hidden rounded-3xl bg-white p-3 shadow-sm sm:p-5">
+      <Surface className="p-3 sm:p-5">
         <div className="mb-4 flex items-center justify-between gap-3">
           <div>
             <h3 className="text-lg font-black text-zinc-950">Focus</h3>
@@ -59,7 +61,7 @@ export default function DashboardPage() {
             <WorkCard key={item.id} item={item} />
           ))}
         </div>
-      </div>
+      </Surface>
     </section>
   );
 }

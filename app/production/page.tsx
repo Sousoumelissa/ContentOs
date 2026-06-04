@@ -10,6 +10,7 @@ import { InlineBadgeSelect } from "@/components/InlineBadgeSelect";
 import { Modal } from "@/components/Modal";
 import { PageTitle } from "@/components/PageTitle";
 import { AlertList, PriorityBadge, PrioritySummary, ProductionPhaseBadge } from "@/components/ProductionInsights";
+import { Surface } from "@/components/Surface";
 import { Tabs } from "@/components/Tabs";
 import { WorkCard, contentToCard } from "@/components/WorkCard";
 import { patchContent } from "@/lib/api";
@@ -127,7 +128,7 @@ export default function ProductionPage() {
         />
       ) : null}
 
-      <div className="rounded-3xl bg-white p-4 shadow-sm">
+      <Surface>
         <Tabs
           active={view}
           setActive={setView}
@@ -169,7 +170,7 @@ export default function ProductionPage() {
             </select>
           </div>
         </div>
-      </div>
+      </Surface>
 
       {view === "cards" ? (
         <div className="grid min-w-0 gap-3 xl:grid-cols-2">

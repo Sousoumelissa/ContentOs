@@ -2,6 +2,7 @@
 
 import { type ReactNode, useMemo, useState } from "react";
 import { ArrowLeft, ArrowLeftRight, ArrowRight, Eye, EyeOff, RotateCcw, Search } from "lucide-react";
+import { Surface } from "./Surface";
 import type { NotionOption } from "@/lib/notion/types";
 import { allStatusOptionId } from "@/lib/use-option-order";
 
@@ -61,7 +62,7 @@ export function FilterBar({
   }, [editingVisibility, hiddenStatusIds, statuses, statusOrderIds]);
 
   return (
-    <div className="rounded-3xl bg-white p-4 shadow-sm">
+    <Surface>
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex h-10 min-w-[240px] items-center gap-2 rounded-2xl border border-zinc-100 bg-white px-3">
@@ -227,6 +228,6 @@ export function FilterBar({
           ) : null}
         </div>
       ) : null}
-    </div>
+    </Surface>
   );
 }
