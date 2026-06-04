@@ -33,19 +33,19 @@ export default function DashboardPage() {
       <PageTitle title="Dashboard" description="Vue rapide de tes bases Notion." />
       <NotionWarnings warnings={data.warnings} />
 
-      <div className="grid gap-3 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         {stats.map(({ label, value, icon: Icon }) => (
-          <div key={label} className="rounded-3xl bg-white p-4 shadow-sm">
-            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-zinc-50 text-violet-600">
+          <div key={label} className="rounded-2xl bg-white p-3 shadow-sm sm:rounded-3xl sm:p-4">
+            <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-2xl bg-zinc-50 text-violet-600 sm:h-10 sm:w-10">
               <Icon size={18} />
             </div>
             <p className="text-xs font-bold text-zinc-500">{label}</p>
-            <p className="mt-1 text-3xl font-black text-zinc-950">{value}</p>
+            <p className="mt-1 text-2xl font-black text-zinc-950 sm:text-3xl">{value}</p>
           </div>
         ))}
       </div>
 
-      <div className="rounded-3xl bg-white p-5 shadow-sm">
+      <div className="rounded-3xl bg-white p-4 shadow-sm sm:p-5">
         <div className="mb-4 flex items-center justify-between gap-3">
           <div>
             <h3 className="text-lg font-black text-zinc-950">Focus</h3>
