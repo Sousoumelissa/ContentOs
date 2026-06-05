@@ -8,6 +8,11 @@ import { Button } from "@/components/Button";
 import { DataState } from "@/components/DataState";
 import { EmptyState } from "@/components/EmptyState";
 import { FilterBar } from "@/components/FilterBar";
+import {
+  InputCardBadges as SharedInputCardBadges,
+  InputContentPopup,
+  InputStatusBadge as SharedInputStatusBadge
+} from "@/components/InputContentControls";
 import { InlineBadgeSelect } from "@/components/InlineBadgeSelect";
 import { Modal } from "@/components/Modal";
 import { AlertList, PriorityBadge, PrioritySummary, ProductionPhaseBadge } from "@/components/ProductionInsights";
@@ -276,7 +281,7 @@ export default function AccountDetailPage({ params }: { params: Promise<{ brandI
       {message ? <div className="rounded-2xl bg-white px-4 py-3 text-sm font-black text-zinc-700 shadow-sm">{message}</div> : null}
 
       {openedInput ? (
-        <InputPopup
+        <InputContentPopup
           item={openedInput}
           brands={data.brands}
           sources={data.sources}
@@ -388,12 +393,10 @@ export default function AccountDetailPage({ params }: { params: Promise<{ brandI
                 <Button variant="light" disabled={correctingStatuses} onClick={() => void applyStatusCorrections()}>
                   {correctingStatuses ? "Correction..." : "Verifier"}
                 </Button>
-                {validateInputs.length > 0 ? (
-                  <Button variant="light" disabled={launchingAutomation} onClick={() => void launchProductionAutomation()}>
-                    <Play size={14} />
-                    {launchingAutomation ? "Lancement..." : "Lancer scripts"}
-                  </Button>
-                ) : null}
+                <Button variant="light" disabled={launchingAutomation || validateInputs.length === 0} onClick={() => void launchProductionAutomation()}>
+                  <Play size={14} />
+                  {launchingAutomation ? "Lancement..." : "Lancer scripts"}
+                </Button>
               </>
             }
           />
@@ -720,7 +723,7 @@ function InputList({
           hideNotionLink
           onOpen={() => onOpen(input)}
           badges={
-            <InputCardBadges
+            <SharedInputCardBadges
               item={input}
               data={data}
               brands={brands}
@@ -731,7 +734,7 @@ function InputList({
             />
           }
           statusBadge={
-            <InputStatusBadge
+            <SharedInputStatusBadge
               item={input}
               statusOptions={statusOptions}
               disabled={inlineSaving === input.id}

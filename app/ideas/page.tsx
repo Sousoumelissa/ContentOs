@@ -6,6 +6,11 @@ import { Button } from "@/components/Button";
 import { DataState } from "@/components/DataState";
 import { EmptyState } from "@/components/EmptyState";
 import { FilterBar } from "@/components/FilterBar";
+import {
+  InputCardBadges as SharedInputCardBadges,
+  InputContentPopup,
+  InputStatusBadge as SharedInputStatusBadge
+} from "@/components/InputContentControls";
 import { InlineBadgeSelect } from "@/components/InlineBadgeSelect";
 import { Modal } from "@/components/Modal";
 import { PageTitle } from "@/components/PageTitle";
@@ -208,10 +213,8 @@ export default function IdeasPage() {
       {message ? <div className="rounded-3xl bg-white p-3 text-sm font-bold text-zinc-700 shadow-sm">{message}</div> : null}
       {showForm ? <NewInputForm onClose={() => setShowForm(false)} onDone={reload} brands={data.brands} /> : null}
       {openedInput ? (
-        <InputPopup
+        <InputContentPopup
           item={openedInput}
-          brandName={firstNameFor(data, openedInput.brandIds)}
-          sourceName={sourceNameFor(data, openedInput.sourceIds)}
           brands={data.brands}
           sources={data.sources}
           formatOptions={data.schemas.format.inputs ?? []}
@@ -275,7 +278,7 @@ export default function IdeasPage() {
               hideNotionLink
               onOpen={() => setOpenedInput(item)}
               badges={
-                <InputCardBadges
+                <SharedInputCardBadges
                   item={item}
                   data={data}
                   brands={data.brands}
@@ -286,7 +289,7 @@ export default function IdeasPage() {
                 />
               }
               statusBadge={
-                <InputStatusBadge
+                <SharedInputStatusBadge
                   item={item}
                   statusOptions={statusOrder.orderedOptions}
                   disabled={inlineSaving === item.id}
