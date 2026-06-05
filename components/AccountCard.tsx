@@ -37,9 +37,9 @@ export function AccountCard({
       <CardHeader>
         <div className="min-w-0">
           <CardBadges className="mb-2">
-            <Badge color="blue">@{accountHandle(account.name)}</Badge>
-            <Badge color={account.niche ? "blue" : "orange"}>{account.niche || "Niche vide"}</Badge>
-            {account.platforms.length ? <Badge color="purple">{account.platforms.length} plateformes</Badge> : null}
+            {account.platforms.map((platform) => (
+              <Badge key={platform} color="purple">{platform}</Badge>
+            ))}
           </CardBadges>
           <CardTitle className="line-clamp-1">{account.name}</CardTitle>
         </div>
@@ -63,13 +63,16 @@ export function AccountCard({
         <MiniStat label="prets" value={stats.readyOrPublished} />
       </CardStats>
 
-      <p className="line-clamp-1 text-sm text-zinc-500">{account.target || "Cible non renseignee"}</p>
+      <div className="space-y-1 text-sm text-zinc-500">
+        <p className="line-clamp-1 break-words">
+          <span className="font-bold text-zinc-700">Niche :</span> {account.niche || "Niche non renseignee"}
+        </p>
+        <p className="line-clamp-1 break-words">
+          <span className="font-bold text-zinc-700">Cible :</span> {account.target || "Cible non renseignee"}
+        </p>
+      </div>
     </Card>
   );
-}
-
-function accountHandle(name: string) {
-  return name.toLowerCase().replaceAll(" ", "");
 }
 
 function MiniStat({ label, value }: { label: string; value: number }) {
