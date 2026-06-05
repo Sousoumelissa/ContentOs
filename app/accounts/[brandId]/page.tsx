@@ -13,6 +13,7 @@ import { Modal } from "@/components/Modal";
 import { AlertList, PriorityBadge, PrioritySummary, ProductionPhaseBadge } from "@/components/ProductionInsights";
 import { Tabs } from "@/components/Tabs";
 import { WorkCard, contentToCard, inputToCard } from "@/components/WorkCard";
+import { getAccountStats } from "@/lib/account-stats";
 import { patchContent, patchInput, patchStatus, postContentFromInput, postProductionAutomation } from "@/lib/api";
 import { getInputStatusCorrection, inputStatusCorrectionMessage } from "@/lib/input-readiness";
 import type { BootstrapData, Brand, ContentItem, InputContent, NotionOption, Source } from "@/lib/notion/types";
@@ -313,7 +314,7 @@ export default function AccountDetailPage({ params }: { params: Promise<{ brandI
       {tab === "overview" ? (
         <div className="space-y-5">
           <PrioritySummary counts={accountData.priorityCounts} />
-          <AccountOverview brand={brand} data={data} contents={accountData.sortedContents} sources={accountData.sources} />
+          <AccountOverview brand={brand} data={data} />
           <section className="rounded-3xl bg-white p-5 shadow-sm">
             <SectionTitle title="A traiter maintenant" count={urgentItems.length} />
             <ContentList
@@ -452,29 +453,18 @@ function AccountHeader({ brand }: { brand: Brand }) {
   );
 }
 
-function AccountOverview({
-  brand,
-  data,
-  contents,
-  sources
-}: {
-  brand: Brand;
-  data: BootstrapData;
-  contents: ContentItem[];
-  sources: Source[];
-}) {
-  const published = contents.filter((item) => getProductionPhase(item).key === "published").length;
-  const ready = contents.filter((item) => ["ready", "scheduled"].includes(getProductionPhase(item).key)).length;
+function AccountOverview({ brand, data }: { brand: Brand; data: BootstrapData }) {
+  const stats = getAccountStats(brand, data);
 
   return (
     <div className="grid gap-3 xl:grid-cols-[1fr_1fr]">
       <div className="rounded-3xl bg-white p-5 shadow-sm">
         <SectionTitle title="Carte du compte" />
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <MiniMetric label="Production" value={contents.length} />
-          <MiniMetric label="Prets / programmes" value={ready} />
-          <MiniMetric label="Publies" value={published} />
-          <MiniMetric label="Sources" value={sources.length} />
+          <MiniMetric label="Inputs" value={stats.inputs} />
+          <MiniMetric label="A traiter" value={stats.toProcess} />
+          <MiniMetric label="Production" value={stats.production} />
+          <MiniMetric label="Prets / publies" value={stats.readyOrPublished} />
         </div>
       </div>
       <div className="rounded-3xl bg-white p-5 shadow-sm">
