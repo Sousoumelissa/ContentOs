@@ -5,6 +5,7 @@ import { type FormEvent, use, useMemo, useState } from "react";
 import { ArrowLeft, ExternalLink, Play } from "lucide-react";
 import { Badge } from "@/components/Badge";
 import { Button } from "@/components/Button";
+import { ContentCard } from "@/components/ContentCardControls";
 import { DataState } from "@/components/DataState";
 import { EmptyState } from "@/components/EmptyState";
 import { FilterBar } from "@/components/FilterBar";
@@ -17,7 +18,7 @@ import { InlineBadgeSelect } from "@/components/InlineBadgeSelect";
 import { Modal } from "@/components/Modal";
 import { AlertList, PriorityBadge, PrioritySummary, ProductionPhaseBadge } from "@/components/ProductionInsights";
 import { Tabs } from "@/components/Tabs";
-import { WorkCard, contentToCard, inputToCard } from "@/components/WorkCard";
+import { WorkCard, inputToCard } from "@/components/WorkCard";
 import { getAccountStats } from "@/lib/account-stats";
 import { patchContent, patchInput, patchStatus, postContentFromInput, postProductionAutomation } from "@/lib/api";
 import { getInputStatusCorrection, inputStatusCorrectionMessage } from "@/lib/input-readiness";
@@ -516,29 +517,16 @@ function ContentList({
         const priority = getContentPriority(item, data);
 
         return (
-          <WorkCard
+          <ContentCard
             key={item.id}
-            item={contentToCard(item, firstNameFor(data, item.brandIds))}
-            hideNotionLink
-            onOpen={() => onOpen(item)}
-            badges={
-              <ContentCardBadges
-                item={item}
-                brands={brands}
-                formatOptions={formatOptions}
-                disabled={inlineSaving === item.id}
-                onChange={(patch) => void onInlineChange(item, patch)}
-              />
-            }
-            statusBadge={
-              <ContentStatusBadge
-                item={item}
-                statusOptions={statusOptions}
-                disabled={inlineSaving === item.id}
-                onChange={(patch) => void onInlineChange(item, patch)}
-              />
-            }
-            footer={<AlertList alerts={priority.alerts} compact />}
+            item={item}
+            data={data}
+            brands={brands}
+            statusOptions={statusOptions}
+            formatOptions={formatOptions}
+            disabled={inlineSaving === item.id}
+            onChange={(patch) => void onInlineChange(item, patch)}
+            onOpen={onOpen}
           />
         );
       })}

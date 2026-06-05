@@ -3,6 +3,7 @@
 import { type ReactNode, useMemo, useState } from "react";
 import { Badge } from "@/components/Badge";
 import { Button } from "@/components/Button";
+import { ContentCard } from "@/components/ContentCardControls";
 import { DataState } from "@/components/DataState";
 import { EmptyState } from "@/components/EmptyState";
 import { FilterBar } from "@/components/FilterBar";
@@ -12,7 +13,6 @@ import { PageTitle } from "@/components/PageTitle";
 import { AlertList, PriorityBadge, PrioritySummary, ProductionPhaseBadge } from "@/components/ProductionInsights";
 import { Surface } from "@/components/Surface";
 import { Tabs } from "@/components/Tabs";
-import { WorkCard, contentToCard } from "@/components/WorkCard";
 import { patchContent } from "@/lib/api";
 import type { Brand, ContentItem, NotionOption } from "@/lib/notion/types";
 import { getContentPriority, getPriorityCounts, getProductionPhase, sortByPriority } from "@/lib/production-insights";
@@ -176,29 +176,16 @@ export default function ProductionPage() {
         <div className="grid min-w-0 gap-3 xl:grid-cols-2">
           {items.length === 0 ? <EmptyState label="Aucun contenu trouve." /> : null}
           {items.map((item) => (
-            <WorkCard
+            <ContentCard
               key={item.id}
-              item={contentToCard(item, firstNameFor(data, item.brandIds))}
-              hideNotionLink
-              onOpen={() => setOpenedContent(item)}
-              badges={
-                <ContentCardBadges
-                  item={item}
-                  brands={data.brands}
-                  formatOptions={data.schemas.format.contents ?? []}
-                  disabled={inlineSaving === item.id}
-                  onChange={(patch) => void saveContentInline(item, patch)}
-                />
-              }
-              statusBadge={
-                <ContentStatusBadge
-                  item={item}
-                  statusOptions={statusOrder.orderedOptions}
-                  disabled={inlineSaving === item.id}
-                  onChange={(patch) => void saveContentInline(item, patch)}
-                />
-              }
-              footer={<AlertList alerts={getContentPriority(item, data).alerts} compact />}
+              item={item}
+              data={data}
+              brands={data.brands}
+              statusOptions={statusOrder.orderedOptions}
+              formatOptions={data.schemas.format.contents ?? []}
+              disabled={inlineSaving === item.id}
+              onChange={(patch) => void saveContentInline(item, patch)}
+              onOpen={setOpenedContent}
             />
           ))}
         </div>
@@ -292,29 +279,16 @@ function ProductionKanban({
               <div className="min-h-[220px] space-y-2 bg-zinc-50 p-3">
                 {columnItems.length === 0 ? <EmptyState label="Aucun contenu" /> : null}
                 {columnItems.map((item) => (
-                  <WorkCard
+                  <ContentCard
                     key={item.id}
-                    item={contentToCard(item, firstNameFor(data, item.brandIds))}
-                    hideNotionLink
-                    onOpen={() => onOpen(item)}
-                    badges={
-                      <ContentCardBadges
-                        item={item}
-                        brands={brands}
-                        formatOptions={formatOptions}
-                        disabled={inlineSaving === item.id}
-                        onChange={(patch) => void onInlineChange(item, patch)}
-                      />
-                    }
-                    statusBadge={
-                      <ContentStatusBadge
-                        item={item}
-                        statusOptions={statusOptions}
-                        disabled={inlineSaving === item.id}
-                        onChange={(patch) => void onInlineChange(item, patch)}
-                      />
-                    }
-                    footer={<AlertList alerts={getContentPriority(item, data).alerts} compact />}
+                    item={item}
+                    data={data}
+                    brands={brands}
+                    statusOptions={statusOptions}
+                    formatOptions={formatOptions}
+                    disabled={inlineSaving === item.id}
+                    onChange={(patch) => void onInlineChange(item, patch)}
+                    onOpen={onOpen}
                   />
                 ))}
               </div>
