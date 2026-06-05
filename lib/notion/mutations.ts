@@ -34,6 +34,45 @@ export async function changeStatus(databaseKey: DatabaseKey, pageId: string, sta
   return { ok: true, message: "Statut mis a jour dans Notion." };
 }
 
+export async function createBrand(payload: {
+  name: string;
+  status?: string;
+  niche?: string;
+  target?: string;
+  tone?: string;
+  platformIds?: string[];
+}): Promise<ActionResult> {
+  if (!payload.name.trim()) {
+    throw new Error("Le nom du compte est obligatoire.");
+  }
+
+  const database = await retrieveDatabase(getDatabaseId("brands"));
+  const status = payload.status || (await firstStatusOrFallback("brands", "En cours"));
+
+  await assertStatusExists("brands", status);
+
+  const properties: Record<string, unknown> = {
+    [notionProperties.title.brands]: titleValue(payload.name),
+    [notionProperties.status]: statusValue(status)
+  };
+
+  // On ecrit uniquement dans les colonnes qui existent vraiment dans Notion.
+  // Comme ca, si une propriete optionnelle change, la creation du compte reste plus robuste.
+  const nicheProperty = firstExistingProperty(database, ["Details/Niche"]);
+  const targetProperty = firstExistingProperty(database, ["Cible"]);
+  const toneProperty = firstExistingProperty(database, ["Ton"]);
+  const platformsProperty = firstExistingProperty(database, ["Réseau", "Reseau"]);
+
+  if (nicheProperty) properties[nicheProperty] = richTextValue(payload.niche ?? "");
+  if (targetProperty) properties[targetProperty] = richTextValue(payload.target ?? "");
+  if (toneProperty) properties[toneProperty] = richTextValue(payload.tone ?? "");
+  if (platformsProperty) properties[platformsProperty] = relationValue(payload.platformIds ?? []);
+
+  await createDatabasePage(getDatabaseId("brands"), properties);
+
+  return { ok: true, message: "Compte cree dans Notion." };
+}
+
 export async function createInputContent(payload: {
   title: string;
   details?: string;

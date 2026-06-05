@@ -25,6 +25,23 @@ export async function patchStatus(database: DatabaseKey, pageId: string, status:
   return parseJsonResponse<{ ok: boolean; message: string }>(response);
 }
 
+export async function postAccount(payload: {
+  name: string;
+  status?: string;
+  niche?: string;
+  target?: string;
+  tone?: string;
+  platformIds?: string[];
+}) {
+  const response = await fetch("/api/notion/account", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+
+  return parseJsonResponse<{ ok: boolean; message: string }>(response);
+}
+
 export async function postInput(payload: {
   title: string;
   details?: string;
