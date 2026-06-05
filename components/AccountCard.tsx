@@ -56,7 +56,7 @@ export function AccountCard({
         </div>
       </CardHeader>
 
-      <CardStats className="mb-2">
+      <CardStats className="mb-2 gap-1 rounded-xl bg-zinc-50/60 p-1">
         <MiniStat label="inputs" value={stats.inputs} />
         <MiniStat label="a traiter" value={stats.toProcess} />
         <MiniStat label="prod" value={stats.production} />
@@ -77,9 +77,9 @@ export function AccountCard({
 
 function MiniStat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-xl bg-white px-1.5 py-1.5 text-center">
-      <p className="text-base font-black leading-none text-zinc-950">{value}</p>
-      <p className="mt-0.5 truncate text-[10px] font-bold text-zinc-400">{label}</p>
+    <div className="rounded-lg bg-white/60 px-1 py-1 text-center">
+      <p className="text-sm font-black leading-none text-zinc-900">{value}</p>
+      <p className="mt-0.5 truncate text-[9px] font-bold text-zinc-400">{label}</p>
     </div>
   );
 }
