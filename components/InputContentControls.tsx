@@ -1,6 +1,7 @@
 "use client";
 
 import { type FormEvent, useState } from "react";
+import { Play } from "lucide-react";
 import { Button } from "./Button";
 import { InlineBadgeSelect } from "./InlineBadgeSelect";
 import { Modal } from "./Modal";
@@ -91,6 +92,7 @@ export function InputContentPopup({
   formatOptions,
   statusOptions,
   onSave,
+  onGenerate,
   onClose
 }: {
   item: InputContent;
@@ -108,6 +110,7 @@ export function InputContentPopup({
     formats: string[];
     status?: string;
   }) => Promise<void>;
+  onGenerate?: (inputId: string) => Promise<string | void>;
   onClose: () => void;
 }) {
   const [title, setTitle] = useState(item.title);
@@ -118,7 +121,9 @@ export function InputContentPopup({
   const [formats, setFormats] = useState(item.formats);
   const [status, setStatus] = useState(item.status);
   const [saving, setSaving] = useState(false);
+  const [generating, setGenerating] = useState(false);
   const [error, setError] = useState("");
+  const [automationMessage, setAutomationMessage] = useState("");
   const isDirty =
     title !== item.title ||
     details !== item.details ||
@@ -146,6 +151,23 @@ export function InputContentPopup({
       setError(caught instanceof Error ? caught.message : "Modification impossible.");
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function generateScript() {
+    if (!onGenerate) return;
+
+    setGenerating(true);
+    setError("");
+    setAutomationMessage("");
+
+    try {
+      const message = await onGenerate(item.id);
+      setAutomationMessage(message || "Automatisation lancee pour cette inspiration.");
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Automatisation impossible a lancer.");
+    } finally {
+      setGenerating(false);
     }
   }
 
@@ -220,7 +242,14 @@ export function InputContentPopup({
         <ReadBlock title="Legende" value={item.caption} />
 
         {error ? <p className="text-xs font-bold text-rose-600">{error}</p> : null}
+        {automationMessage ? <p className="text-xs font-bold text-emerald-700">{automationMessage}</p> : null}
         <div className="flex flex-wrap justify-end gap-2">
+          {onGenerate ? (
+            <Button type="button" variant="light" disabled={saving || generating} onClick={() => void generateScript()}>
+              <Play size={14} />
+              {generating ? "Lancement..." : "Generer le script"}
+            </Button>
+          ) : null}
           <Button type="button" variant="light" disabled={saving} onClick={onClose}>
             Annuler
           </Button>

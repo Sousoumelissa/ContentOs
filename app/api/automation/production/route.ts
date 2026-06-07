@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 type ProductionAutomationPayload = {
+  id?: string;
   brandId?: string;
   inputIds?: string[];
 };
@@ -21,14 +22,17 @@ export async function POST(request: Request) {
   try {
     const payload = (await request.json()) as ProductionAutomationPayload;
 
-    // Le webhook recoit le contexte, mais l'automatisation peut quand meme
-    // choisir de chercher elle-meme toutes les inspirations en statut Validate.
+    const isSingleInput = Boolean(payload.id);
+
+    // Sans id, Make lance le mode batch et cherche lui-meme les inspirations Validate.
+    // Avec id, Make cible une inspiration precise depuis la fiche idee.
     const response = await fetch(webhookUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         source: "content-os",
-        action: "production_batch",
+        action: isSingleInput ? "production_single" : "production_batch",
+        id: payload.id ?? undefined,
         brandId: payload.brandId ?? null,
         inputIds: payload.inputIds ?? []
       })
@@ -41,7 +45,10 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json({ ok: true, message: "Automatisation lancee pour les inspirations Validate." });
+    return NextResponse.json({
+      ok: true,
+      message: isSingleInput ? "Automatisation lancee pour cette inspiration." : "Automatisation lancee pour les inspirations Validate."
+    });
   } catch (error) {
     return NextResponse.json(
       {

@@ -171,6 +171,15 @@ export default function AccountDetailPage({ params }: { params: Promise<{ brandI
     }
   }
 
+  async function launchSingleInputAutomation(inputId: string) {
+    const result = await postProductionAutomation({
+      id: inputId,
+      brandId
+    });
+    setMessage(result.message);
+    return result.message;
+  }
+
   async function applyStatusCorrections() {
     setMessage("");
     setCorrectingStatuses(true);
@@ -290,6 +299,7 @@ export default function AccountDetailPage({ params }: { params: Promise<{ brandI
           formatOptions={data.schemas.format.inputs ?? []}
           statusOptions={data.schemas.status.inputs ?? []}
           onSave={saveInput}
+          onGenerate={launchSingleInputAutomation}
           onClose={() => setOpenedInput(null)}
         />
       ) : null}
@@ -396,7 +406,7 @@ export default function AccountDetailPage({ params }: { params: Promise<{ brandI
                 </Button>
                 <Button variant="light" disabled={launchingAutomation || validateInputs.length === 0} onClick={() => void launchProductionAutomation()}>
                   <Play size={14} />
-                  {launchingAutomation ? "Lancement..." : "Lancer scripts"}
+                  {launchingAutomation ? "Script en cours..." : "Scripter idees validees"}
                 </Button>
               </>
             }

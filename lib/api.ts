@@ -107,7 +107,7 @@ export async function patchContent(payload: {
   return parseJsonResponse<{ ok: boolean; message: string }>(response);
 }
 
-export async function postProductionAutomation(payload: { brandId?: string; inputIds: string[] }) {
+export async function postProductionAutomation(payload: { id?: string; brandId?: string; inputIds?: string[] }) {
   const response = await fetch("/api/automation/production", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

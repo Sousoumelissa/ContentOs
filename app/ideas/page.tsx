@@ -149,6 +149,12 @@ export default function IdeasPage() {
     }
   }
 
+  async function launchSingleInputAutomation(inputId: string) {
+    const result = await postProductionAutomation({ id: inputId });
+    setMessage(result.message);
+    return result.message;
+  }
+
   async function applyStatusCorrections() {
     setMessage("");
     setCorrectingStatuses(true);
@@ -220,6 +226,7 @@ export default function IdeasPage() {
           formatOptions={data.schemas.format.inputs ?? []}
           statusOptions={statusOrder.orderedOptions}
           onSave={saveInput}
+          onGenerate={launchSingleInputAutomation}
           onClose={() => setOpenedInput(null)}
         />
       ) : null}
@@ -259,7 +266,7 @@ export default function IdeasPage() {
                   </Button>
                   <Button variant="light" disabled={launchingAutomation || validateInputs.length === 0} onClick={() => void launchProductionAutomation()}>
                     <Play size={14} />
-                    {launchingAutomation ? "Lancement..." : "Lancer scripts"}
+                    {launchingAutomation ? "Script en cours..." : "Scripter idees validees"}
                   </Button>
                 </>
               ) : null
